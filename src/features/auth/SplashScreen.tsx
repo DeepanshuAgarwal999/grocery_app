@@ -1,13 +1,13 @@
 import { Colors } from '@utils/Constants'
-import { View, Text, StyleSheet, Image } from 'react-native'
+import { View, Text, StyleSheet, Image, Alert, BackHandler, Linking } from 'react-native'
 import Logo from '@assets/images/logo.jpeg'
 import { screenHeight, screenWidth } from '@utils/Scaling'
 import { useEffect } from 'react'
-import { navigate } from '@utils/NavigationUtils'
+import { navigate, resetAndNavigate } from '@utils/NavigationUtils'
 import Geolocation from '@react-native-community/geolocation'
 import { useAuthStore } from '@state/authStore'
 import { tokenStorage } from '@state/storage'
-import  {jwtDecode} from 'jwt-decode' 
+import { jwtDecode } from 'jwt-decode'
 
 Geolocation.setRNConfiguration({
     skipPermissionRequests: false,
@@ -15,23 +15,84 @@ Geolocation.setRNConfiguration({
     enableBackgroundLocationUpdates: true,
     locationProvider: 'auto'
 })
+
+
 interface DecodedToken {
     exp: number
 }
 
 const SplashScreen = () => {
     const { user, setUser } = useAuthStore()
+
     const tokenCheck = async () => {
-        const accessToken = tokenStorage.getString('accessToken')
-        const refreshToken = tokenStorage.getString('refreshToken')
-        if (accessToken ) {
-            const decodedAccessToken = jwtDecode<DecodedToken>(accessToken) 
+        const accessToken = tokenStorage.getString('accessToken') as string
+        const refreshToken = tokenStorage.getString('refreshToken') as string
+
+        if (accessToken) {
+            const decodedAccessToken = jwtDecode<DecodedToken>(accessToken)
+            const decodedRefreshToken = jwtDecode<DecodedToken>(refreshToken)
+
+            const currentTime = Math.floor(Date.now() / 1000)
+
+            if (decodedRefreshToken?.exp < currentTime) {
+                resetAndNavigate("CustomerLogin")
+                Alert.alert("Your session has expired. Please login again.")
+                return false
+            }
+            else if (decodedAccessToken?.exp < currentTime) {
+                try {
+                    resetAndNavigate("CustomerLogin")
+                    // TODO: Implement refresh token
+                } catch (error) {
+                    Alert.alert("Your session has expired. Please login again.")
+                    return false
+                }
+            }
+            if (user?.role === USER_ROLE.CUSTOMER) {
+                resetAndNavigate("ProductDashboard")
+            }
+            else {
+                resetAndNavigate("DeliveryLogin")
+            }
         }
+        else {
+            return false
+        }
+        return true
     }
     useEffect(() => {
-        const timer = setTimeout(() => {
-            navigate('CustomerLogin')
-        }, 1000);
+        const initialStartup = async () => {
+            Geolocation.requestAuthorization(
+                () => {
+                    console.log('Location permission granted')
+                },
+                (error) => {
+                    console.log('Location permission not granted:', error)
+                    Alert.alert(
+                        'Location Permission Required',
+                        'This app requires location permission to function properly. Would you like to open settings?',
+                        [
+                            {
+                                text: 'Open Settings', onPress: () => {
+                                    BackHandler.exitApp()
+                                    Linking.openSettings()
+                                }
+                            },
+                            { text: 'Exit App', onPress: () => BackHandler.exitApp() }
+                        ]
+                    )
+                }
+            )
+           
+            const isTokenValid = await tokenCheck()
+            if (!isTokenValid) {
+                navigate('ProductDashboard')
+            }
+            else {
+                navigate('CustomerLogin')
+            }
+        }
+        const timer = setTimeout(initialStartup, 1000);
         return () => clearTimeout(timer);
     }, [])
     return (
