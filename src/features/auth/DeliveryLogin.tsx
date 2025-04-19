@@ -59,10 +59,10 @@ const DeliveryLogin: FC = () => {
               secureTextEntry={true}
               right={false}
             />
-            <CustomText variant='h6' style={{marginTop:4, marginBottom:4}} fontFamily={Fonts.SemiBold}>
+            <CustomButton title='Login' disabled={email.length < 5 || password.length < 5} onPress={handleLogin} loading={isLoading} />
+            <CustomText variant='h6' style={{marginTop:8,}} fontFamily={Fonts.SemiBold}>
               By Continuing, you agree to our Terms of services & Privacy Policy
             </CustomText>
-            <CustomButton title='Login' disabled={email.length < 5 || password.length < 5} onPress={handleLogin} loading={isLoading} />
           </View>
 
 
