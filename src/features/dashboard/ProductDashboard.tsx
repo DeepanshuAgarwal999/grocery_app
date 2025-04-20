@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, Platform } from 'react-native'
-import React, { useEffect } from 'react'
+import { View, Text, StyleSheet, Platform, Animated } from 'react-native'
+import React, { useEffect, useRef } from 'react'
 import CustomSafeAreaView from '@components/global/CustomSafeAreaView'
 import {
   CollapsibleContainer,
@@ -12,11 +12,30 @@ import { NoticeHeight, screenHeight } from '@utils/Scaling'
 import Geolocation from '@react-native-community/geolocation'
 import { reverseGeocode } from 'services/map.service'
 import { useAuthStore } from '@state/authStore'
+import NoticeAnimation from './NoticeAnimation'
+import Visuals from './Visuals'
 
 const NOTICE_HEIGHT = -(NoticeHeight + 12)
 
 const ProductDashboard = () => {
   const { user, setUser } = useAuthStore()
+  const noticePosition = useRef(new Animated.Value(NOTICE_HEIGHT)).current
+
+  const slideUp = () => {
+    Animated.timing(noticePosition, {
+      toValue: NoticeHeight,
+      duration: 1200,
+      useNativeDriver: false,
+    }).start()
+  }
+  const slideDown = () => {
+    Animated.timing(noticePosition, {
+      toValue: 0,
+      duration: 1200,
+      useNativeDriver: false,
+    }).start()
+  }
+
   useEffect(() => {
     const UpdateUser = () => {
       Geolocation.getCurrentPosition((position) => {
@@ -26,11 +45,19 @@ const ProductDashboard = () => {
         console.log(error)
       })
     }
+    slideDown()
   }, [])
   return (
-    <CustomSafeAreaView>
-      <Text>ProductDashboard</Text>
-    </CustomSafeAreaView>
+    // <NoticeAnimation noticePosition={noticePosition}>
+      <>
+        {/* <Visuals /> */}
+        <CustomSafeAreaView>
+          <View>
+
+          </View>
+        </CustomSafeAreaView>
+      </>
+    // </NoticeAnimation>
   )
 }
 const styles = StyleSheet.create({
