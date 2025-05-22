@@ -12,18 +12,18 @@ const Notice = () => {
         <View style={{ height: NoticeHeight }}>
             <View style={styles.container}>
                 <View style={styles.noticeContainer}>
-                    <SafeAreaView style={{ padding: 10 }}>
+                    <View style={{ padding: 10 }}>
                         <CustomText style={styles.heading} variant='body' fontFamily={Fonts.SemiBold}>
                             It's raining near this location
                         </CustomText>
                         <CustomText style={styles.textCenter} variant='body2'>
                             Our delivery partners may take longer to deliver your order
                         </CustomText>
-                    </SafeAreaView>
+                    </View>
                 </View>
             </View>
 
-            <Svg width={"100%"} height={35} fill="#CCD5E4" viewBox='0  0 4000 1000' preserveAspectRatio='none'
+            <Svg width={"100%"} height={35} fill="#CCD5E4" viewBox='0 0 5000 2000' preserveAspectRatio='none'
                 style={styles.wave}>
                 <Defs>
                     <Path id="wavepath" d={wavyData} />
@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
     noticeContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#CCD5E4'
     },
     textCenter: {
         textAlign: 'center',
