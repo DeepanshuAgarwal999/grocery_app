@@ -8,6 +8,7 @@ import Geolocation from '@react-native-community/geolocation'
 import { useAuthStore } from '@state/authStore'
 import { tokenStorage } from '@state/storage'
 import { jwtDecode } from 'jwt-decode'
+// import { reverseGeocode } from 'services/map.service'
 
 Geolocation.setRNConfiguration({
     skipPermissionRequests: false,
@@ -42,6 +43,7 @@ const SplashScreen = () => {
             else if (decodedAccessToken?.exp < currentTime) {
                 try {
                     resetAndNavigate("CustomerLogin")
+                    // refetchUser(setUSer)
                     // TODO: Implement refresh token
                 } catch (error) {
                     Alert.alert("Your session has expired. Please login again.")
@@ -83,7 +85,7 @@ const SplashScreen = () => {
                     )
                 }
             )
-           
+
             const isTokenValid = await tokenCheck()
             if (!isTokenValid) {
                 navigate('ProductDashboard')
