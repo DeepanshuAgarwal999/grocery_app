@@ -17,10 +17,12 @@ const Visuals = () => {
         <Animated.View style={[styles.container, headerAnimationStyle]}>
             <LinearGradient colors={darkWeatherColors} style={styles.gradient} />
             <Image source={require('@assets/images/cloud.png')} style={styles.cloud} />
-            <LottieView autoPlay
-                enableMergePathsAndroidForKitKatAndAbove
-                loop style={styles.lottie}
-                source={'@assets/animations/raining.json'} />
+            <LottieView
+                autoPlay={true}
+                enableMergePathsAndroidForKitKatAndAbove={true}
+                loop
+                style={styles.lottie}
+                source={require('@assets/animations/raining.json')} />
         </Animated.View>
     )
 }
@@ -29,7 +31,8 @@ export default Visuals
 
 const styles = StyleSheet.create({
     container: {
-        position: 'absolute'
+        position: 'absolute',
+        zIndex: 10,
     },
     lottie: {
         width: '100%',
