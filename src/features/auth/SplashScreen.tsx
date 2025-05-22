@@ -8,7 +8,7 @@ import Geolocation from '@react-native-community/geolocation'
 import { useAuthStore } from '@state/authStore'
 import { tokenStorage } from '@state/storage'
 import { jwtDecode } from 'jwt-decode'
-import { reverseGeocode } from 'services/map.service'
+// import { reverseGeocode } from 'services/map.service'
 
 Geolocation.setRNConfiguration({
     skipPermissionRequests: false,
