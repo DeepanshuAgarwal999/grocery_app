@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, Animated } from 'react-native'
 import React from 'react'
 import { NoticeHeight } from '@utils/Scaling'
 import Notice from '@components/dashboard/Notice'
+
 const NOTICE_HEIGHT = -(NoticeHeight + 12)
 
 const NoticeAnimation = ({ noticePosition, children }: { noticePosition: any, children: React.ReactElement }) => {
